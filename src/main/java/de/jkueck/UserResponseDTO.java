@@ -1,10 +1,10 @@
-package murraco.dto;
+package de.jkueck;
 
 import java.util.List;
 
+import de.jkueck.database.entities.UserRole;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import murraco.model.AppUserRole;
 
 @Data
 public class UserResponseDTO {
@@ -16,6 +16,6 @@ public class UserResponseDTO {
   @ApiModelProperty(position = 2)
   private String email;
   @ApiModelProperty(position = 3)
-  List<AppUserRole> appUserRoles;
+  List<UserRole> appUserRoles;
 
 }
