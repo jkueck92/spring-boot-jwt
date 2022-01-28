@@ -1,13 +1,15 @@
 package de.jkueck.security;
 
-import de.jkueck.service.ApplicationUserDetails;
 import de.jkueck.database.entities.User;
+import de.jkueck.service.UserAuthService;
+import de.jkueck.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import de.jkueck.exception.CustomException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,7 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
@@ -36,7 +39,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length:3600000}")
     private long validityInMilliseconds = 3600000; // 1h
 
-    private final ApplicationUserDetails applicationUserDetails;
+    private final UserAuthService userService;
 
     @PostConstruct
     protected void init() {
@@ -46,7 +49,7 @@ public class JwtTokenProvider {
     public String createJWTToken(User user) {
 
         Claims claims = Jwts.claims().setSubject(String.valueOf(user.getEmail()));
-        claims.put("auth", user.getUserRoles());
+        claims.put("auth", user.getRole().getName());
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime validTo = now.plusMinutes(5);
@@ -62,7 +65,8 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.applicationUserDetails.loadUserByUsername(getUsername(token));
+        String userName = getUsername(token);
+        UserDetails userDetails = this.userService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

@@ -1,10 +1,9 @@
 package de.jkueck.controller;
 
-import de.jkueck.UserResponseDTO;
+import de.jkueck.UserResponse;
 import de.jkueck.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,21 +17,21 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Long delete(@PathVariable Long id) {
         this.userService.deleteById(id);
         return id;
     }
 
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public UserResponseDTO search(@PathVariable Long id) {
-        return this.modelMapper.map(userService.getById(id), UserResponseDTO.class);
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public UserResponse search(@PathVariable Long id) {
+        return this.modelMapper.map(userService.getById(id), UserResponse.class);
     }
 
     @GetMapping(value = "/me")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
-    public UserResponseDTO whoAmI(HttpServletRequest req) {
-        return this.modelMapper.map(this.userService.whoAmI(req), UserResponseDTO.class);
+    // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CLIENT')")
+    public UserResponse whoAmI(HttpServletRequest req) {
+        return this.modelMapper.map(this.userService.whoAmI(req), UserResponse.class);
     }
 }

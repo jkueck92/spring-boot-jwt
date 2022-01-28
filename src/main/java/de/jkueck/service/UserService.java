@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import de.jkueck.exception.CustomException;
 import de.jkueck.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +23,10 @@ public class UserService {
 
     public void deleteById(Long id) {
         this.userRepository.deleteById(id);
+    }
+
+    public User getByEmail(String email) {
+        return this.userRepository.findByEmail(email);
     }
 
     public User getById(Long id) {
